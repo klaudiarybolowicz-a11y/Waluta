@@ -2,135 +2,169 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Przelicznik WFRP</title>
+<title>Mennica Imperium</title>
 
-<!-- Fonty klimatyczne -->
 <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1f1a12;
+}
 
-        background: #2c241a;
-    }
+/* ŚWIECA */
+.candle {
+    position: absolute;
+    top: 10%;
+    width: 10px;
+    height: 40px;
+    background: #eee;
+    border-radius: 3px;
+}
 
-    .parchment {
-        background: radial-gradient(circle at 50% 50%, #f5e6c8, #e2cfa3);
-        border: 2px solid #8b6f3d;
-        border-radius: 12px;
-        padding: 25px;
-        width: 300px;
+.flame {
+    position: absolute;
+    top: -15px;
+    left: -5px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #ffdd88, #ff9900, transparent);
+    border-radius: 50%;
+    animation: flicker 0.15s infinite;
+}
 
-        box-shadow:
-            inset 0 0 30px rgba(0,0,0,0.2),
-            0 0 25px rgba(0,0,0,0.6);
+/* MIGOTANIE */
+@keyframes flicker {
+    0% { transform: scale(1) translateX(0); opacity: 0.9; }
+    50% { transform: scale(1.1) translateX(1px); opacity: 1; }
+    100% { transform: scale(0.95) translateX(-1px); opacity: 0.85; }
+}
 
-        font-family: 'IM Fell English', serif;
-        color: #2b1d0e;
-    }
+/* PERGAMIN */
+.parchment {
+    position: relative;
+    background: radial-gradient(circle, #f5e6c8, #e2cfa3);
+    border: 2px solid #8b6f3d;
+    border-radius: 12px;
+    padding: 25px;
+    width: 320px;
 
-    h3 {
-        text-align: center;
-        font-family: 'Uncial Antiqua', cursive;
-        margin-bottom: 15px;
-    }
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,0.2),
+        0 0 40px rgba(255,200,120,0.2);
 
-    .inputs {
-        display: flex;
-        justify-content: space-between;
-    }
+    animation: glow 3s infinite alternate;
 
-    input {
-        width: 70px;
-        padding: 6px;
-        border: 1px solid #8b6f3d;
-        border-radius: 6px;
-        background: rgba(255,255,255,0.4);
-        text-align: center;
-        font-family: inherit;
-    }
+    font-family: 'IM Fell English', serif;
+    color: #2b1d0e;
+}
 
-    button {
-        margin-top: 10px;
-        width: 100%;
-        padding: 8px;
-        border: none;
-        border-radius: 6px;
+/* DELIKATNY PULS ŚWIATŁA */
+@keyframes glow {
+    from { box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(255,200,120,0.15); }
+    to { box-shadow: inset 0 0 35px rgba(0,0,0,0.25), 0 0 60px rgba(255,200,120,0.35); }
+}
 
-        background: #8b6f3d;
-        color: #f5e6c8;
-        font-family: 'Uncial Antiqua', cursive;
-        cursor: pointer;
-    }
+h3 {
+    text-align: center;
+    font-family: 'Uncial Antiqua', cursive;
+}
 
-    button:hover {
-        background: #a6844a;
-    }
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #8b6f3d;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.4);
+    margin-top: 10px;
+    font-family: inherit;
+    text-align: center;
+}
 
-    #result {
-        margin-top: 15px;
-        text-align: center;
-        font-weight: bold;
-    }
+.result {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
 
-    .note {
-        font-size: 12px;
-        margin-top: 10px;
-        text-align: center;
-        opacity: 0.7;
-    }
+.note {
+    font-size: 12px;
+    margin-top: 10px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.footer {
+    margin-top: 15px;
+    font-size: 11px;
+    text-align: center;
+    font-style: italic;
+    opacity: 0.6;
+}
 </style>
 </head>
 
 <body>
 
+<!-- świeca -->
+<div class="candle">
+    <div class="flame"></div>
+</div>
+
 <div class="parchment">
     <h3>💰 Mennica Imperium</h3>
 
-    <div class="inputs">
-        <input id="zk" type="number" placeholder="ZK">
-        <input id="ss" type="number" placeholder="ss">
-        <input id="mp" type="number" placeholder="mp">
-    </div>
+    <input id="input" placeholder="np. 2zk 5ss 10mp lub 500">
 
-    <button onclick="convertToMP()">→ przelicz na pensy</button>
-    <button onclick="convertFromMP()">→ rozbij na monety</button>
-
-    <p id="result"></p>
+    <div class="result" id="result">—</div>
 
     <div class="note">
-        1 ZK = 20 ss = 240 mp
+        1 Złota Korona = 20 Szylingów = 240 Pensów
+    </div>
+
+    <div class="footer">
+        zatwierdzone przez kupców Altdorfu
     </div>
 </div>
 
 <script>
-function convertToMP() {
-    let zk = parseInt(document.getElementById("zk").value) || 0;
-    let ss = parseInt(document.getElementById("ss").value) || 0;
-    let mp = parseInt(document.getElementById("mp").value) || 0;
+const input = document.getElementById("input");
+const result = document.getElementById("result");
+
+input.addEventListener("input", () => {
+    let text = input.value.toLowerCase();
+
+    let zk = 0, ss = 0, mp = 0;
+
+    let zkMatch = text.match(/(\d+)\s*zk/);
+    let ssMatch = text.match(/(\d+)\s*ss/);
+    let mpMatch = text.match(/(\d+)\s*mp/);
+
+    if (zkMatch) zk = parseInt(zkMatch[1]);
+    if (ssMatch) ss = parseInt(ssMatch[1]);
+    if (mpMatch) mp = parseInt(mpMatch[1]);
+
+    if (!zkMatch && !ssMatch && !mpMatch && text.match(/^\d+$/)) {
+        mp = parseInt(text);
+    }
 
     let total = zk * 240 + ss * 12 + mp;
 
-    document.getElementById("result").innerText =
-        "Łącznie: " + total + " mp";
-}
-
-function convertFromMP() {
-    let total = parseInt(prompt("Podaj ilość pensów (mp):")) || 0;
-
-    let zk = Math.floor(total / 240);
+    let outZK = Math.floor(total / 240);
     total %= 240;
 
-    let ss = Math.floor(total / 12);
-    let mp = total % 12;
+    let outSS = Math.floor(total / 12);
+    let outMP = total % 12;
 
-    document.getElementById("result").innerText =
-        zk + " ZK, " + ss + " ss, " + mp + " mp";
-}
+    result.innerText =
+        outZK + " Złote Korony, " +
+        outSS + " Szylingi, " +
+        outMP + " Pensy";
+});
 </script>
 
 </body>
