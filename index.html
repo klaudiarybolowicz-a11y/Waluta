@@ -2,59 +2,87 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Mennica Imperium</title>
+<title>Przelicznik WFRP</title>
 
+<!-- Fonty klimatyczne -->
 <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #2c241a;
-}
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-.parchment {
-    background: radial-gradient(circle, #f5e6c8, #e2cfa3);
-    border: 2px solid #8b6f3d;
-    border-radius: 12px;
-    padding: 25px;
-    width: 320px;
-    box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 25px rgba(0,0,0,0.6);
-    font-family: 'IM Fell English', serif;
-    color: #2b1d0e;
-}
+        background: #2c241a;
+    }
 
-h3 {
-    text-align: center;
-    font-family: 'Uncial Antiqua', cursive;
-}
+    .parchment {
+        background: radial-gradient(circle at 50% 50%, #f5e6c8, #e2cfa3);
+        border: 2px solid #8b6f3d;
+        border-radius: 12px;
+        padding: 25px;
+        width: 300px;
 
-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #8b6f3d;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.4);
-    margin-top: 10px;
-    font-family: inherit;
-    text-align: center;
-}
+        box-shadow:
+            inset 0 0 30px rgba(0,0,0,0.2),
+            0 0 25px rgba(0,0,0,0.6);
 
-.result {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: bold;
-}
+        font-family: 'IM Fell English', serif;
+        color: #2b1d0e;
+    }
 
-.note {
-    font-size: 12px;
-    margin-top: 10px;
-    text-align: center;
-    opacity: 0.7;
-}
+    h3 {
+        text-align: center;
+        font-family: 'Uncial Antiqua', cursive;
+        margin-bottom: 15px;
+    }
+
+    .inputs {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    input {
+        width: 70px;
+        padding: 6px;
+        border: 1px solid #8b6f3d;
+        border-radius: 6px;
+        background: rgba(255,255,255,0.4);
+        text-align: center;
+        font-family: inherit;
+    }
+
+    button {
+        margin-top: 10px;
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 6px;
+
+        background: #8b6f3d;
+        color: #f5e6c8;
+        font-family: 'Uncial Antiqua', cursive;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #a6844a;
+    }
+
+    #result {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .note {
+        font-size: 12px;
+        margin-top: 10px;
+        text-align: center;
+        opacity: 0.7;
+    }
 </style>
 </head>
 
@@ -63,53 +91,46 @@ input {
 <div class="parchment">
     <h3>💰 Mennica Imperium</h3>
 
-    <input id="input" placeholder="np. 2zk 5ss 10mp lub 500">
+    <div class="inputs">
+        <input id="zk" type="number" placeholder="ZK">
+        <input id="ss" type="number" placeholder="ss">
+        <input id="mp" type="number" placeholder="mp">
+    </div>
 
-    <div class="result" id="result">—</div>
+    <button onclick="convertToMP()">→ przelicz na pensy</button>
+    <button onclick="convertFromMP()">→ rozbij na monety</button>
+
+    <p id="result"></p>
 
     <div class="note">
-        1 Złota Korona = 20 Szylingów = 240 Pensów
+        1 ZK = 20 ss = 240 mp
     </div>
 </div>
 
 <script>
-const input = document.getElementById("input");
-const result = document.getElementById("result");
+function convertToMP() {
+    let zk = parseInt(document.getElementById("zk").value) || 0;
+    let ss = parseInt(document.getElementById("ss").value) || 0;
+    let mp = parseInt(document.getElementById("mp").value) || 0;
 
-input.addEventListener("input", () => {
-    let text = input.value.toLowerCase();
-
-    let zk = 0, ss = 0, mp = 0;
-
-    // Szukaj wartości typu "2zk"
-    let zkMatch = text.match(/(\d+)\s*zk/);
-    let ssMatch = text.match(/(\d+)\s*ss/);
-    let mpMatch = text.match(/(\d+)\s*mp/);
-
-    if (zkMatch) zk = parseInt(zkMatch[1]);
-    if (ssMatch) ss = parseInt(ssMatch[1]);
-    if (mpMatch) mp = parseInt(mpMatch[1]);
-
-    // Jeśli wpisano tylko liczbę → traktuj jako pensy
-    if (!zkMatch && !ssMatch && !mpMatch && text.match(/^\d+$/)) {
-        mp = parseInt(text);
-    }
-
-    // Przelicz na pensy
     let total = zk * 240 + ss * 12 + mp;
 
-    // Rozbij
-    let outZK = Math.floor(total / 240);
+    document.getElementById("result").innerText =
+        "Łącznie: " + total + " mp";
+}
+
+function convertFromMP() {
+    let total = parseInt(prompt("Podaj ilość pensów (mp):")) || 0;
+
+    let zk = Math.floor(total / 240);
     total %= 240;
 
-    let outSS = Math.floor(total / 12);
-    let outMP = total % 12;
+    let ss = Math.floor(total / 12);
+    let mp = total % 12;
 
-    result.innerText =
-        outZK + " Złote Korony, " +
-        outSS + " Szylingi, " +
-        outMP + " Pensy";
-});
+    document.getElementById("result").innerText =
+        zk + " ZK, " + ss + " ss, " + mp + " mp";
+}
 </script>
 
 </body>
