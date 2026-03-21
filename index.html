@@ -1,202 +1,140 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>Tracker Solany</title>
-
-<style>
+  <meta charset="UTF-8">
+  <title>Mennica Imperialna</title>
+  <style>
     body {
-        font-family: "Georgia", serif;
-        background: #1b1a17;
-        color: #e8dcc0;
-        text-align: center;
-        padding: 20px;
+      margin: 0;
+      font-family: "Georgia", serif;
+      background: radial-gradient(circle at center, #3b2f2f, #1e1515);
+      color: #2b1b0f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: url("https://www.transparenttextures.com/patterns/aged-paper.png"), #f4e7c5;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.7);
+      width: 320px;
+      text-align: center;
+      position: relative;
     }
 
     h1 {
-        font-size: 36px;
-        margin-bottom: 30px;
-        color: #d4af37;
-        text-shadow: 0 0 10px black;
+      margin-top: 0;
+      font-size: 28px;
+      letter-spacing: 2px;
     }
 
-    .gun {
-        border: 2px solid #6b5b3e;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px auto;
-        width: 320px;
-        background: linear-gradient(145deg, #2c2a24, #1a1916);
-        box-shadow: 0 0 15px black;
+    .flavour {
+      font-size: 12px;
+      margin-bottom: 20px;
+      font-style: italic;
     }
 
-    h2 {
-        color: #c9b37e;
+    .field {
+      margin: 10px 0;
     }
 
-    .label {
-        font-size: 14px;
-        color: #aaa;
+    label {
+      display: block;
+      margin-bottom: 5px;
     }
-
-    img {
-        width: 120px;
-        margin: 10px 0;
-        filter: sepia(60%) contrast(120%);
-    }
-
-    .bar-container {
-        width: 100%;
-        height: 25px;
-        background: #3a352a;
-        border: 1px solid #6b5b3e;
-        border-radius: 5px;
-        margin: 10px 0;
-    }
-
-    .bar {
-        height: 100%;
-        background: linear-gradient(90deg, #8b0000, #d4af37);
-        width: 0%;
-        border-radius: 5px;
-        transition: width 0.3s;
-    }
-
-    button {
-        margin: 5px;
-        padding: 8px 12px;
-        border: 1px solid #6b5b3e;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: inherit;
-    }
-
-    .fire { background: #5a1f1f; color: white; }
-    .add { background: #2f5a2f; color: white; }
-    .edit { background: #2f3f5a; color: white; }
 
     input {
-        width: 60px;
-        padding: 5px;
-        margin: 5px;
-        text-align: center;
-        background: #1a1916;
-        color: #e8dcc0;
-        border: 1px solid #6b5b3e;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #8b6f47;
+      border-radius: 6px;
+      background: #fff8dc;
+      font-size: 16px;
+      text-align: center;
     }
-</style>
+
+    input:focus {
+      outline: none;
+      border-color: #5c3b1e;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* Subtelny efekt świecy */
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 10px;
+      height: 40px;
+      background: linear-gradient(#ffd27f, #ff9f1c);
+      border-radius: 5px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(255, 200, 100, 0.8);
+      animation: flicker 1.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.8; transform: translateX(-50%) scaleY(1); }
+      100% { opacity: 1; transform: translateX(-50%) scaleY(1.1); }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Tracker Solany</h1>
+<div class="container">
+  <h1>Mennica Imperialna</h1>
+  <div class="flavour">Zatwierdzone przez kupców z Altdorfu</div>
 
-<div class="gun">
-    <h2>Garłacz</h2>
+  <div class="field">
+    <label>Złote Korony (ZK)</label>
+    <input type="number" id="zk" oninput="fromZK()">
+  </div>
 
-    <!-- Obrazek garłacza -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Blunderbuss.jpg/320px-Blunderbuss.jpg">
+  <div class="field">
+    <label>Szylingi (Sz)</label>
+    <input type="number" id="sz" oninput="fromSZ()">
+  </div>
 
-    <div class="label">Śrut</div>
-    <div>Ilość: <span id="blunderbussCount">0</span></div>
+  <div class="field">
+    <label>Pensy (P)</label>
+    <input type="number" id="p" oninput="fromP()">
+  </div>
 
-    <div class="bar-container">
-        <div id="blunderbussBar" class="bar"></div>
-    </div>
-
-    <button class="fire" onclick="fire('blunderbuss')">STRZAŁ</button><br>
-
-    Dodaj: <input type="number" id="blunderbussAdd" value="1">
-    <button class="add" onclick="addAmmo('blunderbuss')">Dodaj</button><br>
-
-    Ustaw: <input type="number" id="blunderbussSet">
-    <button class="edit" onclick="setAmmo('blunderbuss')">Ustaw</button>
-</div>
-
-<div class="gun">
-    <h2>Pistolet</h2>
-
-    <!-- Obrazek pistoletu -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Colt_SAA.jpg/320px-Colt_SAA.jpg">
-
-    <div class="label">Naboje</div>
-    <div>Ilość: <span id="pistolCount">0</span></div>
-
-    <div class="bar-container">
-        <div id="pistolBar" class="bar"></div>
-    </div>
-
-    <button class="fire" onclick="fire('pistol')">STRZAŁ</button><br>
-
-    Dodaj: <input type="number" id="pistolAdd" value="1">
-    <button class="add" onclick="addAmmo('pistol')">Dodaj</button><br>
-
-    Ustaw: <input type="number" id="pistolSet">
-    <button class="edit" onclick="setAmmo('pistol')">Ustaw</button>
+  <div class="footer">
+    1 ZK = 20 Sz = 240 P
+  </div>
 </div>
 
 <script>
-let ammo = {
-    blunderbuss: 0,
-    pistol: 0
-};
+  function fromZK() {
+    let zk = parseFloat(document.getElementById("zk").value) || 0;
 
-let maxAmmo = {
-    blunderbuss: 50,
-    pistol: 50
-};
+    document.getElementById("sz").value = (zk * 20).toFixed(2);
+    document.getElementById("p").value = (zk * 240).toFixed(0);
+  }
 
-// 🔹 Wczytanie zapisanych danych
-function loadData() {
-    let saved = localStorage.getItem("ammoTracker");
-    if (saved) {
-        ammo = JSON.parse(saved);
-    }
-}
+  function fromSZ() {
+    let sz = parseFloat(document.getElementById("sz").value) || 0;
 
-// 🔹 Zapis danych
-function saveData() {
-    localStorage.setItem("ammoTracker", JSON.stringify(ammo));
-}
+    document.getElementById("zk").value = (sz / 20).toFixed(2);
+    document.getElementById("p").value = (sz * 12).toFixed(0);
+  }
 
-function updateUI(type) {
-    document.getElementById(type + "Count").innerText = ammo[type];
+  function fromP() {
+    let p = parseFloat(document.getElementById("p").value) || 0;
 
-    let percent = (ammo[type] / maxAmmo[type]) * 100;
-    percent = Math.min(percent, 100);
-
-    document.getElementById(type + "Bar").style.width = percent + "%";
-}
-
-function fire(type) {
-    if (ammo[type] > 0) {
-        ammo[type]--;
-        saveData();
-        updateUI(type);
-    }
-}
-
-function addAmmo(type) {
-    let value = parseInt(document.getElementById(type + "Add").value);
-    if (!isNaN(value)) {
-        ammo[type] += value;
-        saveData();
-        updateUI(type);
-    }
-}
-
-function setAmmo(type) {
-    let value = parseInt(document.getElementById(type + "Set").value);
-    if (!isNaN(value)) {
-        ammo[type] = value;
-        saveData();
-        updateUI(type);
-    }
-}
-
-// Start
-loadData();
-updateUI('blunderbuss');
-updateUI('pistol');
+    document.getElementById("zk").value = (p / 240).toFixed(2);
+    document.getElementById("sz").value = (p / 12).toFixed(2);
+  }
 </script>
 
 </body>
